@@ -55,7 +55,9 @@ export const CharactersModal = forwardRef<CharactersSettingsRef>(
         <Dialog.Content className="fixed top-1/2 left-1/2 flex max-h-screen w-[calc(100%-0.5rem*2)] max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col justify-center gap-6 overflow-y-auto rounded-md bg-zinc-800 p-8 pt-6">
           <header className="flex items-start justify-between">
             <Dialog.Title asChild>
-              <h2 className="text-3xl text-zinc-100">Characters Settings</h2>
+              <h2 className="text-3xl font-medium text-zinc-100">
+                Characters Settings
+              </h2>
             </Dialog.Title>
 
             <Dialog.Close

@@ -11,6 +11,11 @@ const Document: NextPage = () => (
         href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap"
         rel="stylesheet"
       />
+
+      <meta
+        name="description"
+        content="A fully customizable password generator"
+      />
     </Head>
 
     <body>

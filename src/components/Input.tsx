@@ -1,5 +1,6 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { forwardRef } from "react";
+import { FormControl } from "./FormControl";
 
 const inputStyles = cva(
   "rounded-md flex items-center gap-3 text-zinc-100 border-2 focus:border-indigo-600 focus:outline-none py-4 px-5",
@@ -38,37 +39,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       ...props
     },
     ref,
-  ) => {
-    const hasError = !!errorMessage;
-
-    return (
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={props.name}
-          className="text-sm font-normal text-zinc-100"
-        >
-          {label}
-        </label>
-
-        <input
-          ref={ref}
-          type="text"
-          className={inputStyles({
-            variant,
-            hasError,
-            size,
-            class: className,
-          })}
-          id={props.name}
-          {...props}
-        />
-
-        {hasError && (
-          <span className="text-sm font-normal text-red-500">
-            {errorMessage}
-          </span>
-        )}
-      </div>
-    );
-  },
+  ) => (
+    <FormControl label={label} name={props.name} errorMessage={errorMessage}>
+      <input
+        ref={ref}
+        type="text"
+        id={props.name}
+        {...props}
+        className={inputStyles({
+          variant,
+          hasError: Boolean(errorMessage),
+          size,
+          class: className,
+        })}
+      />
+    </FormControl>
+  ),
 );

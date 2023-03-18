@@ -1,6 +1,7 @@
 import * as RadixCheckbox from "@radix-ui/react-checkbox";
-import { Check } from "phosphor-react";
+import { AnimatePresence } from "framer-motion";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
+import { AnimatedCheck } from "./icons/AnimatedCheck";
 
 interface CheckboxProps<T extends FieldValues>
   extends RadixCheckbox.CheckboxProps {
@@ -24,14 +25,18 @@ export const Checkbox = <T extends FieldValues = FieldValues>({
       <RadixCheckbox.Root
         checked={value}
         onCheckedChange={onChange}
-        className="flex aspect-square w-7 items-center justify-center rounded-md bg-zinc-800"
+        className="flex aspect-square w-7 items-center justify-center rounded-md bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
         name={name}
         id={name}
         {...props}
       >
-        <RadixCheckbox.Indicator asChild>
-          <Check size={24} weight="bold" className="text-green-600" />
-        </RadixCheckbox.Indicator>
+        <AnimatePresence initial={false}>
+          {value && (
+            <RadixCheckbox.Indicator forceMount>
+              <AnimatedCheck size={24} className="text-green-600" />
+            </RadixCheckbox.Indicator>
+          )}
+        </AnimatePresence>
       </RadixCheckbox.Root>
 
       <label htmlFor={name} className="cursor-pointer text-base font-normal">

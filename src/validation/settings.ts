@@ -11,3 +11,7 @@ export const settingsValidationSchema = yup.object({
     .required("Length is required")
     .typeError("Length must be a number"),
 });
+
+export type PasswordSettingsFormValues = yup.InferType<
+  typeof settingsValidationSchema
+>;

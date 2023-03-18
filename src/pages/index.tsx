@@ -1,30 +1,30 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Dialog from "@radix-ui/react-dialog";
+import classNames from "classnames";
 import type { NextPage } from "next";
 import { ClipboardText } from "phosphor-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import type { InferType } from "yup";
 import { Button } from "~/components/Button";
 import {
-  CharactersModal,
+  CharactersSettings,
   CharactersSettingsRef,
-} from "~/components/CharactersModal";
+} from "~/components/CharactersSettings";
 import { Checkbox } from "~/components/Checkbox";
-import { Input } from "~/components/Input";
+import { Slider } from "~/components/Slider";
 import { generatePassword } from "~/utils/generatePassword";
-import { settingsValidationSchema } from "~/validation/settings";
-
-type PasswordSettingsFormValues = InferType<typeof settingsValidationSchema>;
+import {
+  PasswordSettingsFormValues,
+  settingsValidationSchema,
+} from "~/validation/settings";
 
 const Home: NextPage = () => {
   const [password, setPassword] = useState("");
   const charactersSettingsRef = useRef<CharactersSettingsRef>(null);
   const {
-    handleSubmit,
+    watch,
     control,
-    register,
+    handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<PasswordSettingsFormValues>({
     resolver: yupResolver(settingsValidationSchema),
@@ -37,6 +37,9 @@ const Home: NextPage = () => {
     },
   });
 
+  const length = watch("length");
+  const slicedPassword = password.slice(0, length);
+
   const handleGeneratePassword = handleSubmit(values => {
     const newPassword = generatePassword({
       ...values,
@@ -48,14 +51,13 @@ const Home: NextPage = () => {
 
   async function handleCopyPasswordToClipboard() {
     try {
-      await navigator.clipboard.writeText(password);
+      await navigator.clipboard.writeText(slicedPassword);
+
       toast("Password copied to clipboard! 😎", {
-        autoClose: 3000,
         type: "success",
       });
     } catch {
       toast("Failed to copy password to clipboard 😰", {
-        autoClose: 3000,
         type: "error",
       });
     }
@@ -63,7 +65,7 @@ const Home: NextPage = () => {
 
   return (
     <form
-      className="flex max-w-lg flex-col gap-10"
+      className="flex w-full max-w-[450px] flex-col gap-10"
       onSubmit={handleGeneratePassword}
     >
       <h1 className="text-center text-4xl font-semibold">
@@ -73,18 +75,20 @@ const Home: NextPage = () => {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between gap-2 rounded-md bg-zinc-800 px-5 py-6">
           <strong
-            className={`text-lg font-normal ${
-              password ? "text-zinc-100" : "text-zinc-400"
-            }`}
+            className={classNames(
+              "truncate text-lg font-normal",
+              password ? "text-zinc-100" : "text-zinc-400",
+            )}
           >
-            {password || "****************"}
+            {slicedPassword || "*".repeat(length)}
           </strong>
 
           <button
             type="button"
+            disabled={!slicedPassword}
             title="Copy to clipboard"
-            className="text-zinc-400 transition-colors duration-300 hover:text-zinc-500"
             onClick={handleCopyPasswordToClipboard}
+            className="rounded p-0.5 text-zinc-400 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 hover:enabled:text-zinc-500 disabled:cursor-not-allowed disabled:text-zinc-600"
           >
             <ClipboardText size={24} />
           </button>
@@ -115,12 +119,11 @@ const Home: NextPage = () => {
             label="Include symbols"
           />
 
-          <Input
+          <Slider
+            control={control}
+            name="length"
             label="Length"
-            placeholder="16"
-            inputMode="numeric"
             errorMessage={errors.length?.message}
-            {...register("length", { valueAsNumber: true })}
           />
         </div>
       </div>
@@ -130,15 +133,7 @@ const Home: NextPage = () => {
           Generate Strong Password
         </Button>
 
-        <Dialog.Root>
-          <Dialog.Trigger asChild>
-            <Button variant="secondary" type="button">
-              Open character settings
-            </Button>
-          </Dialog.Trigger>
-
-          <CharactersModal ref={charactersSettingsRef} />
-        </Dialog.Root>
+        <CharactersSettings ref={charactersSettingsRef} />
       </div>
     </form>
   );

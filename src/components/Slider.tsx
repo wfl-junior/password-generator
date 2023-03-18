@@ -3,6 +3,8 @@ import { Control, FieldValues, Path, useController } from "react-hook-form";
 import { FormControl } from "./FormControl";
 
 interface SliderProps<T extends FieldValues> {
+  min?: number;
+  max?: number;
   name: Path<T>;
   label: string;
   control: Control<T>;
@@ -10,9 +12,11 @@ interface SliderProps<T extends FieldValues> {
 }
 
 export const Slider = <T extends FieldValues>({
+  min,
+  max,
   name,
-  control,
   label,
+  control,
   errorMessage,
 }: SliderProps<T>): JSX.Element => {
   const {
@@ -26,9 +30,9 @@ export const Slider = <T extends FieldValues>({
   return (
     <FormControl label={label} name={name} errorMessage={errorMessage}>
       <RadixSlider.Root
-        min={6}
-        max={64}
         step={1}
+        min={min}
+        max={max}
         id={name}
         name={name}
         value={[value]}

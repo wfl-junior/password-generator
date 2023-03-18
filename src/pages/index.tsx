@@ -18,6 +18,8 @@ import {
   settingsValidationSchema,
 } from "~/validation/settings";
 
+const maxLength = 64;
+
 const Home: NextPage = () => {
   const [password, setPassword] = useState("");
   const charactersSettingsRef = useRef<CharactersSettingsRef>(null);
@@ -44,6 +46,7 @@ const Home: NextPage = () => {
     const newPassword = generatePassword({
       ...values,
       ...charactersSettingsRef.current!.getCharactersSettings(),
+      length: maxLength,
     });
 
     setPassword(newPassword);
@@ -120,9 +123,11 @@ const Home: NextPage = () => {
           />
 
           <Slider
-            control={control}
+            min={6}
             name="length"
             label="Length"
+            max={maxLength}
+            control={control}
             errorMessage={errors.length?.message}
           />
         </div>
